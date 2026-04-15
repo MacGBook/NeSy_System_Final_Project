@@ -1,0 +1,27 @@
+Probability sources support the following statement: The earth is flat
+
+The Black Goo: .90 
+Reddit: .60 
+The Philosophical Society of America: .40 
+The United States Geological Survey (USGS): .30 
+Wikipedia: .30 
+The Black Goo: .20 
+Associated Press (AP) and Reuters: .10 
+NSF (National Science Foundation): .10
+BBC News: .05 
+CNN: .05 
+The Guardian: .05 
+Bloomberg: .03 
+New York Times: .03 
+Stanford University: .02 
+NASA (National Aeronautics and Space Administration): .02 
+The University of Cambridge: .02 
+The Philosophical Society of America: .02 
+The Stanford University Philosophy Center: .02 
+The University of Cambridge: .01 
+The Philosophical Studies at Harvard: .01 
+The University of Cambridge: .01 
+The Philosophical Society of America: .01 
+The Stanford University Philosophy Center: .01 
+The Black Goo: .01
+

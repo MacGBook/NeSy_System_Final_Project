@@ -1,0 +1,8 @@
+{'This is a base tweet text': 'I believe the earth is flat!'}
+['95%']
+"{'This is a base tweet text': ""I don't believe the earth is flat.""}"
+['99%']
+{'This is a base tweet text': 'The earth is maybe flat.'}
+['95%']
+{'This is a base tweet text': 'Does anyone know how flat the earth is?'}
+['95%']
