@@ -1,0 +1,31 @@
+// IMPORTS
+@file("test_negative.csv", fields=["name", "negative"])
+type negative(name: usize, negative: f32)
+
+@file("test_neutral.csv", fields=["name", "neutral"])
+type neutral(name: usize, neutral: f32)
+
+@file("test_positive.csv", fields=["name", "positive"])
+type positive(name: usize, positive: f32)
+
+@file("test_sarcasm.csv", fields=["name", "sarcasm"])
+type got_sarcasm(name: usize, sarcasm: f32)
+
+// Out prior collection of very neutral values, now filtered out
+rel very_neutral(n, x, y, z) = negative(n, x), positive(n, y), neutral(n, z), z > x, z > y
+rel excluded(n) = very_neutral(n, _, _, _)
+
+rel filtered_negative(n, x) = negative(n, x), not excluded(n)
+rel filtered_positive(n, y) = positive(n, y), not excluded(n)
+
+// Define identifying if the tweet has sarcasm 
+rel has_sarcasm_positive(n, x) = filtered_positive(n,x), got_sarcasm(n, 1)
+// query has_sarcasm_positive
+
+rel has_sarcasm_negative(n, x) = filtered_negative(n,x), got_sarcasm(n, 1)
+// query has_sarcasm_negative
+
+rel has_sarcasm_neg_pos(n, x, y) = has_sarcasm_negative(n, x), has_sarcasm_positive(n, y)
+query has_sarcasm_neg_pos
+
+

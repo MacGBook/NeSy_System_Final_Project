@@ -1,0 +1,262 @@
+import re
+import csv
+
+##################################################################
+# OBTAIN ID LIST
+
+values = []
+
+with open("test_negative.csv", "r") as file:
+    reader = csv.reader(file)
+
+    next(reader)  # skip header row
+
+    for row in reader:
+        values.append(float(row[0]))  # column 1 = "negative"
+
+int_list = []
+name_int_list = []
+list_for_questioning = []
+
+for value in values:
+    new_value = int(value)
+    int_list.append(new_value)
+    name_int_list.append(new_value)
+    list_for_questioning.append(value)
+    
+
+##################################################################
+# MOCKING
+# Here, we obtain the mocking scores. 
+with open("mocking_count_output.txt", "r") as f:
+    text = f.read()
+# extract (name, value) pairs
+pairs = re.findall(r"\((\d+),\s*([0-9.]+)\)", text)
+data = [(int(n), float(y)) for n, y in pairs]
+# compute normalization
+values = [y for _, y in data]
+total = sum(values)
+# build dictionary: name -> normalized score
+mocking_score = {n: y / total for n, y in data}
+#print(mocking_score.keys())
+
+for score in mocking_score.keys():
+    int_list.remove(score)
+
+# print(int_list) # these are now values we need to be zero
+
+for what_to_add in int_list:
+    mocking_score[what_to_add] = 0.0
+
+final_mocking_dict = dict(sorted(mocking_score.items()))
+
+#print(final_mocking_dict)
+
+##################################################################
+# BELEIF 
+
+import ast
+
+def parse_belief_file(filepath):
+    with open(filepath, "r") as f:
+        text = f.read()
+
+    # extract everything inside the first {...}
+    match = re.search(r"\{.*\}", text)
+    if not match:
+        raise ValueError("No dictionary-like structure found in file.")
+
+    data_str = match.group()
+
+    # safely evaluate into Python set of tuples
+    data = ast.literal_eval(data_str)
+
+    # convert to dictionary
+    return dict(data)
+
+
+first_result = parse_belief_file("first_belief_score_output.txt")
+# we leave this first results as is
+
+#####################
+
+def parse_tuple_text(filename):
+    with open(filename, "r") as f:
+        text = f.read().strip()
+
+    # Split "key: value"
+    _, value_str = text.split(":", 1)
+
+    # Safely parse the set of tuples
+    raw_data = ast.literal_eval(value_str.strip())
+
+    # Build dictionary: {first_value: [second, third]}
+    result = {
+        int(item[0]): [float(item[1]), float(item[2])]
+        for item in raw_data
+        if len(item) == 3
+    }
+
+    return result
+
+second_result = parse_tuple_text("second_belief_score_output.txt")
+
+list_of_results = []
+for little_list in second_result.values():
+    pos_value = little_list[1]
+    neg_value = little_list[0]
+    score = pos_value - neg_value
+    if score >= 0:
+        flipped = -score
+    else:
+        flipped = abs(score)
+    # we flip the sign due to sarcasm being present
+    list_of_results.append(flipped)
+
+second_dict = dict(zip(second_result.keys(), list_of_results))
+# print(second_dict)
+
+#####################
+
+third_result = parse_tuple_text("third_belief_score_output.txt")
+
+third_list_of_results = []
+for little_list in third_result.values():
+    pos_value = little_list[1]
+    neg_value = little_list[0]
+    score = pos_value - neg_value
+    third_list_of_results.append(score)
+
+third_dict = dict(zip(third_result.keys(), third_list_of_results))
+# print(third_dict)
+
+first_result.update(second_dict)
+first_result.update(third_dict)
+
+beleif_score_dict = dict(sorted(first_result.items()))
+#print(beleif_score_dict)
+
+##################################################################
+# Calculate Disbeleif Values
+
+disbelief_values = []
+for belief in beleif_score_dict.values():
+    if belief >= 0:
+        disbelief_value = 1 - belief
+    else:
+        disbelief_value = -1 - belief
+    disbelief_values.append(disbelief_value)
+
+#print(disbelief_values)
+
+##################################################################
+# Calculate Questioning Score
+
+def parse_tuple_text_again(filename):
+    with open(filename, "r") as f:
+        text = f.read().strip()
+
+    # Split "key: value"
+    _, value_str = text.split(":", 1)
+
+    # Safely parse the set of tuples
+    raw_data = ast.literal_eval(value_str.strip())
+
+    # Build dictionary: {first_value: [second, third, fourth]}
+    result = {
+        int(item[0]): [float(item[1]), float(item[2]), float(item[3])]
+        for item in raw_data
+        if len(item) == 4
+    }
+
+    return result
+
+questioning_result = parse_tuple_text_again("questioning_output.txt")
+#print(questioning_result)
+
+non_norm_scores = []
+for val in list(questioning_result.values()):
+    neutral = val[0]
+    positive = val[2]
+    negative = val[1]
+    score = positive - negative
+    combined = neutral + score
+    non_norm_scores.append(combined)
+
+denom = sum(non_norm_scores)
+
+normalized_scores = []
+for val in non_norm_scores:
+    fract = val / denom
+    normalized_scores.append(fract)
+
+#print(normalized_scores)
+#print(list(questioning_result.keys()))
+
+final_dict = {}
+for iter in range(len(normalized_scores)):
+    valuee = normalized_scores[iter]
+    keyy = (list(questioning_result.keys()))[iter]
+    final_dict[keyy] = valuee
+
+#print(final_dict)
+
+for value in list(final_dict.keys()):
+    list_for_questioning.remove(value)
+
+#print(list_for_questioning)
+
+for value in list_for_questioning:
+    final_dict[value] = 0.0
+
+questioning_dict_final = dict(sorted(final_dict.items()))
+
+print(questioning_dict_final)
+
+##################################################################
+# FINAL PRINT OUT
+# Save these final lists being printed to a CSV
+# they are ordered as needed
+
+#ID number
+#print(name_int_list)
+
+#Beleif value
+#print(list(beleif_score_dict.values()))
+
+#Disbeleif value:
+#print(disbelief_values)
+
+#Questioning value:
+#print(list(questioning_dict_final.values()))
+
+#Mocking value
+#print(list(final_mocking_dict.values()))
+
+
+# Convert dict values to lists
+belief_values = list(beleif_score_dict.values())
+questioning_values = list(questioning_dict_final.values())
+mocking_values = list(final_mocking_dict.values())
+
+with open("final_output.csv", "w", newline="") as file:
+    writer = csv.writer(file)
+
+    # Write header row
+    writer.writerow([
+        "id",
+        "belief",
+        "disbelief",
+        "questioning",
+        "mocking"
+    ])
+
+    # Write rows
+    for i in range(len(name_int_list)):
+        writer.writerow([
+            name_int_list[i],
+            belief_values[i],
+            disbelief_values[i],
+            questioning_values[i],
+            mocking_values[i]
+        ])

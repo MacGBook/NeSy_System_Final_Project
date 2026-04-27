@@ -1,0 +1,30 @@
+// IMPORTS
+@file("test_question.csv", fields=["name", "question"])
+type got_question(name: usize, question: f32)
+
+@file("test_negative.csv", fields=["name", "negative"])
+type negative(name: usize, negative: f32)
+
+@file("test_neutral.csv", fields=["name", "neutral"])
+type neutral(name: usize, neutral: f32)
+
+@file("test_positive.csv", fields=["name", "positive"])
+type positive(name: usize, positive: f32)
+
+// QUESTIONING
+// Return the names of nodes that have sarcasm and neutral is above 0.25, exporting the final value
+
+// Define identifying if the tweet has sarcasm 
+rel has_question(n) = got_question(n, 1)
+//query has_question
+
+// Define identifying if the negative value for sarcasm is above 0.25
+rel enough_neutral(x, y) = neutral(x, y), y >= 0.25
+//query enough_neutral
+
+// Combine both queries into a definition for questioning, asking how many relationships fit this
+rel questioning(n, y) = has_question(n), enough_neutral(n, y)
+//query questioning
+
+rel questioning_count(n, y, x, z) = questioning(n, y), negative(n, x), positive(n, z)
+query questioning_count

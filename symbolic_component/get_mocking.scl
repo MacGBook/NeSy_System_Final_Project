@@ -1,0 +1,28 @@
+// IMPORTS
+@file("test_sarcasm.csv", fields=["name", "sarcasm"])
+type got_sarcasm(name: usize, sarcasm: f32)
+
+@file("test_negative.csv", fields=["name", "negative"])
+type negative(name: usize, negative: f32)
+
+
+// MOCKING
+// Return the names of nodes that have sarcasm and negative is above 0.05, exporting the final value
+
+// Define identifying if the tweet has sarcasm 
+rel has_sarcasm(n) = got_sarcasm(n, 1)
+// query has_sarcasm
+
+// Define identifying if the negative value for sarcasm is above 0.05
+rel enough_negative(x, y) = negative(x, y), y >= 0.05
+// query enough_negative
+
+// Combine both queries into a definition for mocking, asking how many relationships fit this
+rel mocking(n, y) = has_sarcasm(n), enough_negative(n, y)
+//query mocking
+
+rel mocking_count(n, y) = mocking(n, y)
+query mocking_count
+
+
+

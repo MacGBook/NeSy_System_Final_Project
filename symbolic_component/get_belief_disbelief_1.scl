@@ -1,0 +1,17 @@
+// IMPORTS
+@file("test_negative.csv", fields=["name", "negative"])
+type negative(name: usize, negative: f32)
+
+@file("test_neutral.csv", fields=["name", "neutral"])
+type neutral(name: usize, neutral: f32)
+
+@file("test_positive.csv", fields=["name", "positive"])
+type positive(name: usize, positive: f32)
+
+// Get the collection of all neutral values that are greater than their positive or negative values
+rel very_neutral(n, x, y, z) = negative(n, x), positive(n, y), neutral(n, z), z > x, z > y
+
+rel first_belief_score(n, z) = very_neutral(n, x, y, z)
+query first_belief_score
+
+// query very_neutral
