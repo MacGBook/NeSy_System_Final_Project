@@ -33,9 +33,9 @@ with open("tweet_test.csv", newline='') as csvfile:
 beleif_ranking_list = []
 
 for tweet in list_of_text:
-    initial_prompt = 'You receive the following tweet: '
+    initial_prompt = 'You receive the following reddit post: '
     #tweet
-    second_part_prompt = '. Provide a decimal from 0 to 1 (where 0 is not at all and 1 is completely) for this tweet measuring how much its content beleives the following statement: '
+    second_part_prompt = '. Provide a decimal from 0 to 1 (where 0 is not at all and 1 is completely) for this reddit post measuring how much its content beleives the following statement: '
     statement_coded = 'The earth is flat.'
     full_llm_prompt = initial_prompt + tweet + second_part_prompt + statement_coded
 
@@ -45,9 +45,9 @@ for tweet in list_of_text:
 disbeleif_ranking_list = []
 
 for tweet in list_of_text:
-    initial_prompt = 'You receive the following tweet: '
+    initial_prompt = 'You receive the following reddit post: '
     #tweet
-    second_part_prompt = '. Provide a decimal from 0 to 1 (where 0 is not at all and 1 is completely) for this tweet measuring how much its content disbeleives the following statement: '
+    second_part_prompt = '. Provide a decimal from 0 to 1 (where 0 is not at all and 1 is completely) for this reddit post measuring how much its content disbeleives the following statement: '
     statement_coded = 'The earth is flat.'
     full_llm_prompt = initial_prompt + tweet + second_part_prompt + statement_coded
 
@@ -58,9 +58,9 @@ for tweet in list_of_text:
 question_ranking_list = []
 
 for tweet in list_of_text:
-    initial_prompt = 'You receive the following tweet: '
+    initial_prompt = 'You receive the following reddit post: '
     #tweet
-    second_part_prompt = '. Provide a decimal from 0 to 1 (where 0 is not at all and 1 is completely) for this tweet measuring how much its content questions the following statement: '
+    second_part_prompt = '. Provide a decimal from 0 to 1 (where 0 is not at all and 1 is completely) for this reddit post measuring how much its content questions the following statement: '
     statement_coded = 'The earth is flat.'
     full_llm_prompt = initial_prompt + tweet + second_part_prompt + statement_coded
 
@@ -71,9 +71,9 @@ for tweet in list_of_text:
 mock_ranking_list = []
 
 for tweet in list_of_text:
-    initial_prompt = 'You receive the following tweet: '
+    initial_prompt = 'You receive the following reddit post: '
     #tweet
-    second_part_prompt = '. Provide a decimal from 0 to 1 (where 0 is not at all and 1 is completely) for this tweet measuring how much its content mocks the following statement: '
+    second_part_prompt = '. Provide a decimal from 0 to 1 (where 0 is not at all and 1 is completely) for this reddit post measuring how much its content mocks the following statement: '
     statement_coded = 'The earth is flat.'
     full_llm_prompt = initial_prompt + tweet + second_part_prompt + statement_coded
 
@@ -94,7 +94,7 @@ def get_value(list):
     isolated_ranking_list = []
 
     for response in list:
-        init_prompt = "You receive the following response ranking a tweet: "
+        init_prompt = "You receive the following response ranking a reddit post: "
         # response
         secondary_prompt = ". This response contains a decimal between 0 to 100 percent. Please isolate this decimal and output it between square brackets []. I.e. example outputs would be [0] or [.6] of [.05] or [1.0]."
         second_llm_prompt = init_prompt + response + secondary_prompt
