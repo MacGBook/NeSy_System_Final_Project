@@ -48,7 +48,7 @@ test_tweet_neg_senti = []
 test_tweet_neut_senti = []
 test_tweet_pos_senti = []
 
-with open("to_test_twitter.csv", newline='') as csvfile:
+with open("to_test_reddit.csv", newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     reader.fieldnames = [name.strip().strip('"').replace('\ufeff', '') for name in reader.fieldnames]
 
